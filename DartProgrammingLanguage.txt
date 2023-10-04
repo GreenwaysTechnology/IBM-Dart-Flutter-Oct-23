@@ -2605,9 +2605,658 @@ void main() {
   car.electric();
   car.petrol();
 }
+.....................................................................................
+				Generics and Collections
+.....................................................................................
+
+if you container objects and methods, which may take any type(Object) if you want restrict to particular type , we can use generics.
+
+Use i want to create a class to accept a specific type like int,double.
+
+Without Generics:
+//Create a class which accepts only Integer
+class IntData {
+  int? data;
+
+  IntData(this.data);
+}
+//Create a class which accepts only Double
+
+class DoubleData {
+  double? data;
+
+  DoubleData(this.data);
+}
+
+void main() {
+  IntData intData = IntData(10);
+  DoubleData doubleData = DoubleData(34.56);
+}
+
+In this code we need to duplicate classes for every type....
+
+How to create a class which accept the data what i want?
+  "The soultion is Generic" class
+
+Generic class Syntax:
+
+class ClassName<T> {
+
+}
+T - means type. 
+
+//Create a class which accepts only Integer
+class Data<T> {
+  T? data;
+
+  Data(this.data);
+}
+
+void main() {
+  //Data intData = Data<int>(10.34);
+  Data intData = Data<int>(10);
+}
+
+Conventions in Generics:
+
+T - Type
+e - Element
+K-  Key
+V - Value
+
+//Create a class which accepts only Integer
+class Data<T> {
+  T? data;
+
+  Data(this.data);
+}
+
+class Map<K, V> {
+  K? Key;
+  V? Value;
+
+  Map(this.Key, this.Value);
+}
+
+void main() {
+  //Data intData = Data<int>(10.34);
+  Data intData = Data<int>(10);
+  Map map = Map<int, String>(1, "Value");
+}
+
+Generic Methods:
+...............
+//Create a class which accepts only Integer
+
+class Adder {
+  T add<T, E>(T value1) {
+    return value1;
+  }
+}
+
+void main() {
+  //Data intData = Data<int>(10.34);
+  Data intData = Data<int>(10);
+  Map map = Map<int, String>(1, "Value");
+
+  Adder adder = Adder();
+  adder.add<int, int>(10);
+}
+.......................................................................
+
+I want to create generic class which accept the particular family of type.
+
+i want to create generic class which accepts only numbers(int,double...)
+
+//Create a class which accepts only Integer
+class Data<T> {
+  T? data;
+
+  Data(this.data);
+}
+
+class Map<K, V> {
+  K? Key;
+  V? Value;
+
+  Map(this.Key, this.Value);
+}
+
+class Adder {
+  T add<T, E>(T value1) {
+    return value1;
+  }
+}
+
+//Generic with Restrictions
+class MyNumber<T extends num> {
+  T data;
+
+  MyNumber(this.data);
+
+  num add<T extends num>(T value1, T value2) {
+    return value1 + value2;
+  }
+}
+
+void main() {
+  //Data intData = Data<int>(10.34);
+  Data intData = Data<int>(10);
+  Map map = Map<int, String>(1, "Value");
+
+  Adder adder = Adder();
+  adder.add<int, int>(10);
+
+  // MyNumber<String>("Helllo");
+  // MyNumber<bool>(true);
+  MyNumber(10);
+  MyNumber(20.45);
+  // MyNumber(true);
+  MyNumber myNumber = MyNumber(0);
+  print(myNumber.add(13, 10));
+}
+.....................................................................................	
+				 Collections
+
+Dart uses different types of collections
+All Collections powered with Generics
+
+1.List
+2.Set 
+3.Map
+
+List:
+ List is similar to arrays in other programming languages
+ List is dynamic and object
+
+class Product {
+  int productId;
+  String productName;
+  double price;
+
+  Product(this.productId, this.productName, this.price);
+}
+
+void main() {
+  //immutable list
+  const List<int> numList = [1, 2, 3, 4];
+  for (int value in numList) {
+    print(value);
+  }
+  numList.forEach((element) {
+    print(element);
+  });
+  List<Product> products = [
+    Product(1, "p1", 1334.0),
+    Product(2, "p2", 34412.0),
+    Product(3, "p3", 12121.0)
+  ];
+  for (Product product in products) {
+    print("${product.productId} ${product.productName} ${product.price}");
+  }
+}
+.....................................................................................
+Set:
+ => Set and List is same but Set does not allow duplicates...
+
+void main() {
+  Set<String> fruits = {"Apple", "Apple", "Orange", "Mango"};
+  for (String fruit in fruits) {
+    print(fruit);
+  }
+}
+....................
+
+Map:
+  => Key value pair
+
+void main() {
+  Map<String, String> countriesAndCapital = {
+    "India": "New Delhi",
+    "USA": " Washing Don DC",
+    "UK": "London"
+  };
+  print(countriesAndCapital);
+}
+....................................................................................
+			 Records
+....................................................................................
+Records are an anonymous,immutable,aggregate type. Like other collection types, they let you bundle multiple objects. 
+Collections are dynamic types, but Records are fixed.
+
+Record syntax:
+ var record = ('hello',a:2,b:true,'last')
+
+
+Without Records if you want to return multiple values from the function , you have use Object
+
+eg:
+class Location {
+  int lat;
+  int lng;
+
+  Location(this.lat, this.lng);
+}
+
+Location getLocation() {
+  int lat = 10;
+  int lng = 9223;
+  return Location(lat, lng);
+}
+
+void main() {
+  Location location = getLocation();
+  print(location.lat);
+  print(location.lng);
+}
+
+Records are going to replace "class" still you can return multiple values from function.
+
+
+void main() {
+  (int, int) getMyLocation() {
+    int lat = 10;
+    int lng = 9223;
+    return (lat, lng);
+  }
+  var location = getMyLocation();
+  print(location);
+}
+
+How to access record fileds?
+
+ Dart exposes special "getter functions" $1 means first value $2 means second value, and so on ,  $n other values.
+
+// class Location {
+//   int lat;
+//   int lng;
+//
+//   Location(this.lat, this.lng);
+// }
+//
+
+void main() {
+  // (int, int) getMyLocation() {
+  //   int lat = 10;
+  //   int lng = 9223;
+  //   return (lat, lng);
+  // }
+  (int, int) getMyLocation() {
+    int lat = 10;
+    int lng = 9223;
+    return (lat, lng);
+  }
+
+  var location = getMyLocation();
+  print(location);
+  print(location.$1);
+  print(location.$2);
+  //Destructuring
+  final (lat, lng) = getMyLocation();
+  print("lat=$lat lng=$lng");
+}
+.....................................................................................
+			 Exception Handling
+.....................................................................................
+Dart language can throw and catch exceptions.
+Exception provides to handle runtime errors.
+Dart Provides two base classes to handle errors
+
+1.Exception
+2.Error
+
+Exception is base class For all exceptions 
+
+Common Sub Classes:
+1.TimeoutException
+2.IOException
+
+Common Sub class for Errors:
+1.StackOverFlowError
+2.TypeError
+3.ArgumentError
+
+Keywords to handle Exceptions:
+
+1.throw 
+2.catch
+3.try
+4.on
+5.finally
+
+..
+Risky code always goes inside try block...
+Risky code means that code may or may not cause runtime error. if error occurs how to handle that.
+catch block will have error handling code like reporting errors in console or sending to error reporting softwares...
+
+Use case : Handling Generic Exception
+void main() {
+  try {
+     int result = 12 ~/ 0;
+     print("result $result");
+  } catch (e) {
+    print("Handing error");
+    print(e);
+  }
+}
+
+Use case 2:Handling particular Exception
+  try {
+    int result = 12 ~/ 0;
+    print("result $result");
+  } on IntegerDivisionByZeroException {
+    print("Handing error");
+  }
+
+Use case 3: Handling two generic exceptions;
+try {
+     int result = 12 ~/ 0;
+     print("result $result");
+  } catch (e,s) {
+    print("Handing error");
+    print(e);
+  }
+
+Use case 4: handling finally
+void main() {
+  //Here catch block will handle any type of Exception
+  // try {
+  //    int result = 12 ~/ 0;
+  //    print("result $result");
+  // } catch (e) {
+  //   print("Handing error");
+  //   print(e);
+  // }
+  //if i want to handle particular exception
+  // try {
+  //   int result = 12 ~/ 0;
+  //   print("result $result");
+  // } on IntegerDivisionByZeroException {
+  //   print("Handing error");
+  // }
+  //Multiple generic excepiton
+  try {
+    int result = 12 ~/ 0;
+    print("result $result");
+  } catch (e, s) {
+    print("Handing error");
+    print(e);
+  } finally {
+    print("finally");
+  }
+}
+
+Custom Exceptions:
+..................
+ We can create ourown biz exceptions.
+class DepositException implements Exception {
+  String errorMessage() {
+    return 'You Cant enter Amount less than 0';
+  }
+}
+
+void deposit(int amount) {
+  if (amount <= 0) {
+    throw DepositException();
+  }
+  print("deposited amount $amount");
+}
+
+void main() {
+  try {
+    deposit(100);
+    deposit(-10);
+  } on DepositException catch (e) {
+    print(e.errorMessage());
+  }
+}
+..................................................................................
+				Dart Async Programming
+..................................................................................
+
+When you call any method/fun to perform some cpu intensive task, generally that function blocks the current thread.
+lets say if you read a file from the disk or data from the network, if you are doing some animations, these task takes more time than expected.
+Generally User interface applications, runs in thread called main thread or ui thread.
+from the ui thread if you start doing any network operation which blocks the main/ui thread so that the UI would be unresponsive.
+
+if UI thread is blocked because of any io operations, user cant continue to work with app, which degrades the user experience.
+
+In order to improve the user expereince, we should not do any io task in the UI Thread, rather we need to "isloate" the task into separate thread, later that thread need to communicate with main thread.
+
+Dart provides  high level api abstraction to implement such non blocking or async programming technique.
+
+1.Future 
+2.Async...await 
+3.Stream
+4.isloates - new feature - low level
+
+Future:
+  In Dart, Future is object represents a value or error that is not yet available.
+It is used to represent a potential value, or error that will available at some time in the future.
+
+//Future value
+Future<String> getValue() {
+  return Future.value("Hello,I am async value");
+}
+
+void main() {
+  print("start");
+  getValue().then((value) => print(value));
+  print("going on");
+  print("end");
+}
+
+Handling errors and value:
+//Future value
+Future<String> getValue() {
+  return Future.value("Hello,I am async value");
+}
+
+Future<String> getError() {
+  return Future.error("somthing went wrong!");
+}
+
+void main() {
+  print("start");
+  getValue().then((value) => print(value));
+  getError().then((value) => print(value));
+  print("going on");
+  print("end");
+}
+...........
+Future with Delay:
+..................
+Future<String> getUserName() {
+  return Future.delayed(Duration(seconds: 2), () => "Subramnaian");
+}
+void main(){
+  print("start");
+  getUserName().then((value) => print(value));
+  print("end");
+}
+...................................................................................
+		          Async and await 
+...................................................................................
+
+Async...await is not new concept rather which simplifies the Future subscriptions.
+async...await are keywords allows us to write async code that looks and behaves like sync code, making it easier to read.
+
+async keyword:
+  The function which resolves a future
+
+
+//Future value
+Future<String> getValue() {
+  return Future.value("Hello,I am async value");
+}
+
+normal function
+void getData(){ 
+   getValue().then(value=>print(value)) ;  
+}
+
+async 
+void getData() async { 
+  try{
+   final data = await getValue();
+  }
+  catch(e) {
+
+  }
+}
+
 ...
+Future<String> getUserName() {
+  return Future.delayed(Duration(seconds: 2), () => "Subramanian");
+}
+Future<String> getMessage(String name) {
+  return Future.delayed(Duration(seconds: 3), () => "Hello $name");
+}
+
+void getData() async {
+  try {
+    String name = await getUserName();
+    String res =  await getMessage(name);
+    print(res);
+  } catch (e) {
+    print(e);
+  }
+}
+
+void main() {
+  print("start");
+  getData();
+  print("end");
+}
+..................................................................................
+				 Stream
+..................................................................................
+
+A Stream is sequence of asynchronous events representing multiple values that will arrive over period of time.
+
+A Future returns async value but single value.
+
+		Single Value                  Zero or MoreValues
+
+Sync            int                           Iterator
+
+Async           Future<T>                     Stream<T>
+
+How to create Stream?
+......................
+Stream<String> getUsers() {
+  List<String> users = ["a", "b", "c", "d", "e"];
+  return Stream.fromIterable(users);
+}
+
+void main() async {
+  // print("start");
+  // getUsers().listen((event) {
+  //   print(event);
+  // });
+  await for (var event in getUsers()) {
+    print(event);
+  }
+  // print("end");
+}
+....................................................................................
+			 packages
+....................................................................................
+
+How to share code within app or across app?
+
+In dart all the code within dart file is available with in the dart file?
+
+What if i want to share code from one dart file into another?
+
+packages.
+
+Types of packages
+1.custom package
+2.dart or flutter built in packages
+3.third party
+
+pubspec.yaml file 
+ which describes the packages
+Your dart app itself is package.
+
+name: myapp
+description: A sample command-line application.
+version: 1.0.0
+# repository: https://github.com/my_org/my_repo
+
+environment:
+  sdk: ^3.1.2
+
+# Add regular dependencies here.
+dependencies:
+  # path: ^1.8.0
+
+dev_dependencies:
+  lints: ^2.0.0
+  test: ^1.21.0
 
 
+dependencies means what are the dependency packages used for dev and production.
+dev dependencies means what are the dependency packages used for dev only.
+
+
+How to publish or add new dependency?
+
+dart pub  - dependency management tool
+
+https://pub.dev/
+
+How to install new depedency?
+dart pub add vector_math        
+Resolving dependencies... 
+  coverage 1.6.3 (1.6.4 available)
+  test 1.24.6 (1.24.7 available)
+  test_core 0.5.6 (0.5.7 available)
++ vector_math 2.1.4
+  vm_service 11.10.0 (12.0.0 available)
+Changed 1 dependency!
+
+How to use packages into our app? importing libs from the packages
+
+import 'package:packageName/fileName.dart'
+import 'package:packageName/fileName.dart' as myalise
+
+import 'package:vector_math/vector_math.dart';
+
+void main() {
+  Vector3 x = Vector3.zero(); // Zero vector
+  Vector4 y = Vector4.all(4.0); // Vector with 4.0 in all lanes
+  x.zyx = y.xzz; // Sets z,y,x the values in x,z,z
+  print(x.zyx);
+}
+
+Custom Packages.
+
+the code must go inside lib dir
+
+lib/add.dart
+int add(int a, int b) {
+  return a + b;
+}
+
+bin/main.dart
+import 'package:vector_math/vector_math.dart';
+import 'package:myapp/add.dart' as adder;
+
+void main() {
+  Vector3 x = Vector3.zero(); // Zero vector
+  Vector4 y = Vector4.all(4.0); // Vector with 4.0 in all lanes
+  x.zyx = y.xzz; // Sets z,y,x the values in x,z,z
+  print(x.zyx);
+  print(adder.add(12, 33));
+}
+.....................................................................................
+
+
+
+
+				
 
 
 
