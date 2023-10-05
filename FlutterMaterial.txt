@@ -1,0 +1,499 @@
+				Flutter
+.....................................................................................
+
+What is Flutter?
+	Flutter is a cross-platform UI toolkit that is designed to allow code reuse across operating systems such as iOS and Android, while also allowing applications to interface directly with underlying platform services.
+	Flutter now a days to build Mobile(Android/IOS),Desktop(Windows,linux,Mac),Web applications.
+	Flutter inspired from react with respect to coding style,Flutter is component driven(Widget) , tree model.
+
+	Flutter apps are built using dart programming language.
+
+	During development, Flutter apps run in a VM that offers stateful hot reload of changes without needing a full recompile.
+
+	 For release, Flutter apps are compiled directly to machine code, whether Intel x64 or ARM instructions, or to JavaScript if targeting the web
+
+	 The framework is open source, with a permissive BSD license, and has a thriving ecosystem of third-party packages that supplement the core library functionality.
+
+Components of Flutter:
+.....................
+
+1.The layer model: The pieces from which Flutter is constructed.
+
+2.Reactive user interfaces: A core concept for Flutter user interface development.
+
+3.Widgets: The fundamental building blocks of Flutter user interfaces.
+
+4.The rendering process: How Flutter turns UI code into pixels.
+
+5.platform embedders: The code that lets mobile and desktop OSes execute Flutter apps.
+
+Arichitectural layers:
+......................
+
+To the underlying operating system, Flutter applications are packaged in the same way as any other native application.
+
+ A platform-specific embedder provides an entrypoint; coordinates with the underlying operating system for access to services like rendering surfaces, accessibility, and input; and manages the message event loop.
+
+ The embedder is written in a language that is appropriate for the platform: 
+
+	currently Java and C++ for Android, Objective-C/Objective-C++ for iOS and macOS, and C++ for Windows and Linux. 
+
+	Using the embedder, Flutter code can be integrated into an existing application as a module, or the code may be the entire content of the application. Flutter includes a number of embedders for common target platforms
+
+	At the core of Flutter is the Flutter engine, which is mostly written in C++ and supports the primitives necessary to support all Flutter applications. 
+	The engine is responsible for rasterizing composited scenes whenever a new frame needs to be painted.
+
+ 	It provides the low-level implementation of Flutter’s core API, including graphics (through Impeller on iOS and coming to Android, and Skia on other platforms) text layout, file and network I/O, accessibility support, plugin architecture, and a Dart runtime and compile toolchain.
+
+	The engine is exposed to the Flutter framework through dart:ui, which wraps the underlying C++ code in Dart classes. This library exposes the lowest-level primitives, such as classes for driving input, graphics, and text rendering subsystems.
+
+	Typically, developers interact with Flutter through the Flutter framework, which provides a modern, reactive framework written in the Dart language. It includes a rich set of platform, layout, and foundational libraries, composed of a series of layers. Working from the bottom to the top.
+
+
+1.Basic foundational classes, and building block services such as animation, painting, and gestures that offer commonly used abstractions over the underlying foundation.
+
+
+2.The rendering layer provides an abstraction for dealing with layout. With this layer, you can build a tree of renderable objects.
+
+
+3.You can manipulate these objects dynamically, with the tree automatically updating the layout to reflect your changes.
+
+4.The widgets layer is a composition abstraction. Each render object in the rendering layer has a corresponding class in the widgets layer. 
+
+5.In addition, the widgets layer allows you to define combinations of classes that you can reuse.
+
+6.This is the layer at which the reactive programming model is introduced.
+
+7.The Material and Cupertino libraries offer comprehensive sets of controls that use the widget layer’s composition primitives to implement the Material or iOS design languages.
+
+
+Anatomy of an app
+.................
+
+Dart App
+
+Composes widgets into the desired UI.
+Implements business logic.
+Owned by app developer
+
+Framework 
+
+Provides higher-level API to build high-quality apps (for example, widgets, hit-testing, gesture detection, accessibility, text input).
+Composites the app’s widget tree into a scene.
+
+Engine
+
+Responsible for rasterizing composited scenes.
+
+Provides low-level implementation of Flutter’s core APIs (for example, graphics, text layout, Dart runtime).
+
+Exposes its functionality to the framework using the dart:ui API.
+
+Integrates with a specific platform using the Engine’s Embedder API.
+
+Embedder
+
+Coordinates with the underlying operating system for access to services like rendering surfaces, accessibility, and input.
+Manages the event loop.
+Exposes platform-specific API to integrate the Embedder into apps.
+
+Runner
+
+Composes the pieces exposed by the platform-specific API of the Embedder into an app package runnable on the target platform.
+
+Part of app template generated by flutter create, owned by app developer.
+....................................................................................
+			 Flutter Setup
+
+1.Install:
+ 
+1.Select your operating system ( Windows,MacOs,Linux,ChromeOS)
+
+https://docs.flutter.dev/get-started/install
+
+Suppose Your env is windows:
+............................
+1.FlutterSDK
+
+1.download flutter sdk zip file
+2.extract zip file where ever you want
+3.set flutter folder into path - E:\softwares\flutter\bin
+4.Test whether flutter has been set 
+ open cmd prompt
+where flutter dart
+E:\softwares\flutter\bin\flutter
+E:\softwares\flutter\bin\flutter.bat
+E:\softwares\flutter\bin\dart
+E:\softwares\flutter\bin\dart.bat
+
+5.Run flutter doctor.
+flutter doctor
+Doctor summary (to see all details, run flutter doctor -v):
+[√] Flutter (Channel stable, 3.13.6, on Microsoft Windows [Version 10.0.19045.3448], locale en-IN)
+[√] Windows Version (Installed version of Windows is version 10 or higher)
+[√] Android toolchain - develop for Android devices (Android SDK version 34.0.0)
+[√] Chrome - develop for the web
+[!] Visual Studio - develop Windows apps (Visual Studio Build Tools 2019 16.11.20)
+    X The current Visual Studio installation is incomplete. Please reinstall Visual Studio.
+[√] Android Studio (version 2022.3)
+[√] IntelliJ IDEA Community Edition (version 2021.2)
+[√] IntelliJ IDEA Community Edition (version 2022.1)
+[√] VS Code, 64-bit edition (version 1.81.1)
+[√] Connected device (3 available)
+[√] Network resources
+
+! Doctor found issues in 1 category.
+
+Note: 
+1.You must install Android studio and Android SDK.
+
+D:\Android\Sdk  - SDK location.
+
+2.you must install SDK Tools chain.
+  Android SDK settings
+     -Platform tools - must have been installed
+     -SDK Tools - must have been installed
+
+After installing you can see that
+D:\Android\Sdk
+ ->build-tools
+ ->platform
+ ->platform-tools
+
+All tools must have been added in the env "PATH"
+
+PATH
+  D:\Android\Sdk
+  D:\Android\Sdk\tools
+  D:\Android\Sdk\tools\bin
+  D:\Android\Sdk\platform-tools
+  D:\Android
+
+android studio location setup
+flutter config --android-studio-dir=<directory> 
+eg:
+flutter config --android-studio-dir="D:\Program Files\Android\Android Studio"
+
+Accepting licenses:You must run with admin privilage
+
+flutter doctor --android-licenses
+
+....
+
+Flutter Project creations using various ide
+1.vs code
+2.Intellij idea
+3.Android studio.
+
+You can select any ide, but you have to install plugin for flutter.
+
+Android studio.
+ Go to plugins section, install flutter plugin and restart ide.
+
+
+Create Flutter Project using Android Studio.
+
+.....................................................................................
+
+Steps to create and run flutter Project:
+.........................................
+
+1.Device or emulator.
+2.Start android emulator.
+3.create flutter project using android studio template.
+
+Project Architecture:
+
+flutterapp
+  |
+  android
+  ios 
+  web
+  windows
+  linux
+  macos
+ lib
+  |
+  source code- main.dart
+ |
+ pubspec.yaml
+  
+
+2.Publish the code into android emulator
+.....................................................................................
+			 Building User interfaces with Flutter
+....................................................................................
+
+In Flutter  fundamental building block is "Widget" , In React and React Native fundamental building block is "Component".
+
+What is Widget? What is Component?
+ 
+  Both are same only which represents "User interface"
+
+Widget and Component are "Object".
+
+Every UI element is Object which is called "Widget".
+
+Widget describe what their "View" should look like given their current configuration and state.
+
+In Flutter Widgets are "Configurable".
+
+Lets say I want to display simple text on Screen...
+
+What are the configuration is needed?
+
+->Where to display that text - "Location" - Layout
+->Size of the Text
+->Style of the Text
+->Color of the Text
+etc.......
+
+Native Development vs Flutter Development 
+
+eg:
+ Android vs Flutter Development.
+
+In Android "the View" is fundation of every thing that shows up on the screen
+"Button,toolbars,inputs every thing is view"
+IN flutter the rough equivalent to a View is a "Widget"
+
+Note:
+ "Widgets dont map exactly to Android Views"
+
+With Programming native (android) development is highly "Imperative Programming"
+Where as "Flutter Programming is highly "Declarative"
+
+
+Imperative Programming:
+
+In the imperative style, you would typically go to ViewB’s owner and retrieve the instance b using selectors or with findViewById or similar, and invoke mutations on it (and implicitly invalidate it). For example:
+
+ViewB b = findViewById("selector")
+// Imperative style
+b.setColor(red)
+b.clearChildren()
+ViewC c3 = new ViewC(...)
+b.add(c3)
+
+
+Declarative Programming:
+
+// Declarative style
+return ViewB(
+  color: red,
+  child: const ViewC(
+    color:Yellow
+    child: const ViewD()
+  ),
+);
+
+Flutter vs native development
+
+1.flutter is declarative
+   more readable
+2.native is imperative
+
+1.flutter widgets are immutable
+    
+2.native widgets are mutable
+
+if you have object, if you change object properties, the same object is updated over period of time => Mutable pattern.
+
+
+if you have object, if you change object properties, the same object is updated over period of time , when ever update happens , it creates new object => Immutable pattern.
+
+Immutablity is achived by "Delcarative Programming"
+
+.....................................................................................
+
+Hello World:
+.............
+
+In flutter , main.dart is starting point.
+
+
+void main(){
+  
+}
+
+Most of the core widgets are available in the material.dart package.
+
+import 'package:flutter/material.dart';
+
+Every Flutter app must have root Widget.
+
+How to mount ui or root Widget.
+
+runApp function
+
+runApp(Widget app) 
+
+Widget is super class of all Widget.
+
+..........
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(
+    const Text("Hello",textDirection: TextDirection.ltr)
+  );
+}
+out put :
+ if you look at, it displays left most corner of the screen. if you want to display text properly, we need to add alignment(layout).
+
+In Flutter every thing is Widget
+
+ It can  visible or invisble widgets.
+
+Invisible widgets are layout widgets(row,column,center etc...)
+
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const Center(
+    child: Text(
+      "Hello",
+      textDirection: TextDirection.ltr,
+      style: TextStyle(color: Colors.cyan),
+    ),
+  ));
+}
+....................................................................................
+				 Types of Widget
+....................................................................................
+
+Note: runApp function must take only root Widget.
+
+1.StatelessWidget
+2.Statefull Widget
+
+
+Stateless widget:
+ A widget does not require any mutable state(data).
+ A Sateless widget describes "static User interface"
+
+Statefull Widget
+ A widget requires mutable state(data) and biz logic.
+ A Statefull widget describes "Dynamic User interface"
+
+Any widget is class 
+
+How to create Statell widget?
+
+class App extends StatelessWidget {
+  
+}
+
+import 'package:flutter/material.dart';
+
+//
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        "Hello Stateless Widget!",
+        textDirection: TextDirection.ltr,
+        style: TextStyle(color: Colors.cyan),
+      ),
+    );
+  }
+}
+
+void main() {
+  runApp(const App());
+}
+
+
+build method returns Widget which describes UI.
+.....................................................................................
+
+Tree Model of Widgets:
+import 'package:flutter/material.dart';
+
+
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const HelloWorldWidget();
+  }
+}
+
+class HelloWorldWidget extends StatelessWidget {
+  const HelloWorldWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        "Hello World",
+        textDirection: TextDirection.ltr,
+        style: TextStyle(color: Colors.cyan),
+      ),
+    );
+  }
+}
+
+void main() {
+  runApp(const App());
+}
+................................................................................
+
+Inside lib folder
+
+lib/HelloWorld.dart
+import 'package:flutter/material.dart';
+
+class HelloWorldWidget extends StatelessWidget {
+  const HelloWorldWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        "Hello World!!!",
+        textDirection: TextDirection.ltr,
+        style: TextStyle(color: Colors.cyan),
+      ),
+    );
+  }
+}
+
+
+lib/App.dart
+import 'package:flutter/material.dart';
+import 'package:flutterapps/HelloWorld.dart';
+
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const HelloWorldWidget();
+  }
+}
+
+lib/main.dart
+import 'package:flutter/material.dart';
+import 'package:flutterapps/App.dart';
+
+void main() {
+  runApp(const App());
+}
+
+
+
+
+
+
+
+
+
+
+
