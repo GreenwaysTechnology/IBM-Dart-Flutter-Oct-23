@@ -3,6 +3,7 @@
 
 What is Flutter?
 	Flutter is a cross-platform UI toolkit that is designed to allow code reuse across operating systems such as iOS and Android, while also allowing applications to interface directly with underlying platform services.
+
 	Flutter now a days to build Mobile(Android/IOS),Desktop(Windows,linux,Mac),Web applications.
 	Flutter inspired from react with respect to coding style,Flutter is component driven(Widget) , tree model.
 
@@ -486,6 +487,600 @@ import 'package:flutterapps/App.dart';
 void main() {
   runApp(const App());
 }
+.....................................................................................
+			        Basic Widgets
+....................................................................................
+Flutters provides tons of widgets and each widget has tons of properties
+
+Widgets classification:
+
+1.Structural elements/Widgets
+
+Text,Button,Image,Menus,Drawer,Tab etc.......
+
+2.Styltitics Widgets/Elements
+  Font,Color,Border,Box etc........
+
+3.Layout Elements/Widgets
+  Row,Column,Center,Container,Stack,Scaffold etc......
+
+1.Text 
+    The Text Widget lets you create a simple styled Lables
+Text(
+        "Hello World!!!",
+        textDirection: TextDirection.ltr,
+        style: TextStyle(
+            color: Colors.cyan,
+            fontSize: 50.0,
+            fontWeight: FontWeight.bold,
+            backgroundColor: Colors.red),
+      )
+
+
+2.Row,Column:
+    These are flex widgets(Flexiable widgets) which organizes the other widgets either horizontaly(Row), and Vertical(column) directions.
+    These layouts are inspired from web flex box layout
+import 'package:flutter/material.dart';
+
+class App extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: Row(
+      children: [
+        Expanded(
+            child: Text("Google",
+                style:
+                    TextStyle(color: Colors.red, backgroundColor: Colors.red),
+                textAlign: TextAlign.center,
+                textDirection: TextDirection.ltr)),
+        Expanded(
+            child: Text("Microsoft",
+                textAlign: TextAlign.center, textDirection: TextDirection.ltr)),
+        Expanded(
+            child: Text("Facebook",
+                textAlign: TextAlign.center, textDirection: TextDirection.ltr))
+      ],
+    ));
+  }
+}
+
+In the above UI is invisible , it is really to track how to put the elements position
+.....................................................................................
+What if i dont want into trouble in the basic layouting structure, i need some kind of template.
+
+Solution Material Components:
+.............................
+
+Flutter provides a number widgets that help to build apps that follow material design.
+
+in order to give boiler plate basic layouts of any screen size , material provides core widget called MaterialApp.
+
+MaterialApp:
+
+It is Top level Widget
+It is entry point of any screen in flutter app
+
+
+MaterailApp(
+
+)
+
+Basic Material App:
+
+import 'package:flutter/material.dart';
+
+class App extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "My Pet App",
+      home: MyPetHome(),
+    );
+  }
+}
+
+class MyPetHome extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+        child: Text("My Pet App", textDirection: TextDirection.ltr));
+  }
+}
+
+Row or Column with Material:
+............................
+class MyPetHome extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: Row(
+      children: [
+        Expanded(
+            child: Text("Google",
+                style: TextStyle(color: Colors.red),
+                textAlign: TextAlign.center,
+                textDirection: TextDirection.ltr)),
+        Expanded(
+            child: Text("Microsoft",
+                textAlign: TextAlign.center, textDirection: TextDirection.ltr)),
+        Expanded(
+            child: Text("Facebook",
+                textAlign: TextAlign.center, textDirection: TextDirection.ltr))
+      ],
+    ));
+  }
+}
+....................................................................................
+				Scaffold
+...................................................................................
+
+ a scaffold is any temporary elevated or suspended work surface
+
+Scaffolding in flutter provides many widgets with structure, with template,
+etc AppBar,Drawer,BottomNavigation,Floatting Action Button,.......
+
+
+Structure of a Page:
+
+ MaterialApp(
+   title:''
+   home:Scaffold(
+     appBar:
+     
+   )
+ ).
+..............
+Level -1 :
+ App
+  |
+  MaterialApp
+   |
+   scaffold
+     |
+     AppBar
+     |
+     body
+       |
+       Center
+	 |
+	 Column
+	   |
+	   DecoratedBox	
+		|
+	     Padding
+		|
+		Text
+
+import 'package:flutter/material.dart';
+
+class App extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "Dog App",
+      home: Scaffold(
+          appBar: AppBar(
+            title: const Text("Dog App", textAlign: TextAlign.center),
+          ),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DecoratedBox(
+                  decoration: BoxDecoration(color: Colors.lightGreen),
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Puppy 1"),
+                  ),
+                ),
+                DecoratedBox(
+                  decoration: BoxDecoration(color: Colors.lightGreen),
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Puppy 2"),
+                  ),
+                ),
+                DecoratedBox(
+                  decoration: BoxDecoration(color: Colors.lightGreen),
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Puppy 3"),
+                  ),
+                )
+              ],
+            ),
+          )),
+    );
+  }
+}
+
+Level 2: Adding space among Each Element:
+
+SizedBox(
+  height: 8.0,
+)
+
+import 'package:flutter/material.dart';
+
+class App extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "Dog App",
+      home: Scaffold(
+          appBar: AppBar(
+            title: const Text("Dog App", textAlign: TextAlign.center),
+          ),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DecoratedBox(
+                  decoration: BoxDecoration(color: Colors.lightGreen),
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Puppy 1"),
+                  ),
+                ),
+                SizedBox(
+                  height: 8.0,
+                ),
+                DecoratedBox(
+                  decoration: BoxDecoration(color: Colors.lightGreen),
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Puppy 2"),
+                  ),
+                ),
+                SizedBox(
+                  height: 8.0,
+                ),
+                DecoratedBox(
+                  decoration: BoxDecoration(color: Colors.lightGreen),
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Puppy 3"),
+                  ),
+                )
+              ],
+            ),
+          )),
+    );
+  }
+}
+
+Level 3: Adjusting axis position:
+................................
+Either column or row based:
+
+mainAxisAlignment: MainAxisAlignment.end,
+mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+
+import 'package:flutter/material.dart';
+
+class App extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "Dog App",
+      home: Scaffold(
+          appBar: AppBar(
+            title: const Text("Dog App", textAlign: TextAlign.center),
+          ),
+          body: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                DecoratedBox(
+                  decoration: BoxDecoration(color: Colors.lightGreen),
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Puppy 1"),
+                  ),
+                ),
+                SizedBox(
+                  height: 8.0,
+                ),
+                DecoratedBox(
+                  decoration: BoxDecoration(color: Colors.lightGreen),
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Puppy 2"),
+                  ),
+                ),
+                SizedBox(
+                  height: 8.0,
+                ),
+                DecoratedBox(
+                  decoration: BoxDecoration(color: Colors.lightGreen),
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Puppy 3"),
+                  ),
+                )
+              ],
+            ),
+          )),
+    );
+  }
+}
+.....................................................................................
+
+In the above code, "childrens are duplicated" - How to reuse code.
+
+import 'package:flutter/material.dart';
+
+class App extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "Dog App",
+      home: Scaffold(
+          appBar: AppBar(
+            title: const Text("Dog App", textAlign: TextAlign.center),
+          ),
+          body: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                DogName("Puppy 1"),
+                DogName("Puppy 2"),
+                DogName("Puppy 3")
+              ],
+            ),
+          )),
+    );
+  }
+}
+
+class DogName extends StatelessWidget {
+  final String dogName;
+
+  const DogName(this.dogName);
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(color: Colors.lightGreen),
+      child: Padding(padding: EdgeInsets.all(8.0), child: Text(dogName)),
+    );
+  }
+}
+....................................................................................
+How to disable/hide debug flag?
+
+MaterialApp(
+      title: "Dog App",
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+          appBar: AppBar(
+            title: const Text("Dog App", textAlign: TextAlign.center),
+          ),
+          body: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                DogName("Puppy 1"),
+                DogName("Puppy 2"),
+                DogName("Puppy 3")
+              ],
+            ),
+          )),
+    );
+.....................................................................................
+			   Building layouts
+.....................................................................................
+
+How to begin with layoutting your app?
+
+1.Have UX design blue prints
+2.Start with Basic layout
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+// import 'package:flutterapps/App.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "Fluter App",
+      home: Scaffold(
+          appBar: AppBar(
+            title: const Text("Fluter App"),
+          ),
+          backgroundColor: Colors.white,
+          body: const Center(
+            child: Text("Your App content"),
+          )),
+    );
+  }
+}
+
+Step 3:Diagram Layout
+
+=>identify the rows and columns
+=>Does this layout include grid
+=>Are any overloapping elements
+=>do you need tab
+=>Identify the area that require alignment,padding,borers
+
+How to implment title Row:
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+// import 'package:flutterapps/App.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        title: "Fluter App",
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+            appBar: AppBar(
+              title: const Text("Tourist Places"),
+            ),
+            backgroundColor: Colors.white,
+            body: Container(
+              padding: const EdgeInsets.all(32),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        /*2*/
+                        Container(
+                          padding: EdgeInsets.only(bottom: 8),
+                          child: const Text(
+                            "Taj Mahal",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Text(
+                          "Agra,India",
+                          style: TextStyle(color: Colors.grey[500]),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                     child: Column(
+                    children: [Icon(Icons.star, color: Colors.red)],
+                  ))
+                ],
+              ),
+            )));
+  }
+}
+
+How to refactor the above code? How to build layouts with isloated 
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+// import 'package:flutterapps/App.dart';
+
+void main() => runApp(MyApp());
+
+//Title Widget
+Widget titleSectionWidget = Container(
+  padding: const EdgeInsets.all(32),
+  child: Row(
+    children: [
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /*2*/
+            Container(
+              padding: EdgeInsets.only(bottom: 8),
+              child: const Text(
+                "Taj Mahal",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            Text(
+              "Agra,India",
+              style: TextStyle(color: Colors.grey[500]),
+            ),
+          ],
+        ),
+      ),
+      Expanded(
+          child: Column(
+        children: [Icon(Icons.star, color: Colors.red)],
+      ))
+    ],
+  ),
+);
+
+class buildButtonColumn extends StatelessWidget {
+  final Color color;
+  final IconData icon;
+  final String label;
+
+  const buildButtonColumn(this.color, this.icon, this.label);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: color),
+        Container(
+          margin: const EdgeInsets.only(top: 8),
+          child: Text(
+            label,
+            style: TextStyle(
+                fontSize: 12, fontWeight: FontWeight.w400, color: color),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+Color color = Colors.blue;
+//Button Section
+Widget buttonSection = Row(
+  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  children: [
+    buildButtonColumn(color, Icons.call, 'CALL'),
+    buildButtonColumn(color, Icons.near_me, 'ROUTE'),
+    buildButtonColumn(color, Icons.share, 'SHARE'),
+    buildButtonColumn(color, Icons.access_alarm, 'ALARM')
+
+  ],
+);
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        title: "Fluter App",
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+            appBar: AppBar(
+              title: const Text("Tourist Places"),
+            ),
+            backgroundColor: Colors.white,
+            body: Column(children: [titleSectionWidget, buttonSection])));
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

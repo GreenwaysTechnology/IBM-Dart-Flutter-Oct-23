@@ -9,7 +9,11 @@ class HelloWorldWidget extends StatelessWidget {
       child: Text(
         "Hello World!!!",
         textDirection: TextDirection.ltr,
-        style: TextStyle(color: Colors.cyan),
+        style: TextStyle(
+            color: Colors.cyan,
+            fontSize: 50.0,
+            fontWeight: FontWeight.bold,
+            backgroundColor: Colors.red),
       ),
     );
   }
