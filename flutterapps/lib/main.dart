@@ -1,94 +1,71 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-// import 'package:flutterapps/App.dart';
+import 'package:http/http.dart' as http;
 
-void main() => runApp(MyApp());
+Future<Album> fetchAlbum() async {
+  final response = await http
+      .get(Uri.parse('https://jsonplaceholder.typicode.com/albums/2'));
 
-//Title Widget
-Widget titleSectionWidget = Container(
-  padding: const EdgeInsets.all(32),
-  child: Row(
-    children: [
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            /*2*/
-            Container(
-              padding: EdgeInsets.only(bottom: 8),
-              child: const Text(
-                "Taj Mahal",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            Text(
-              "Agra,India",
-              style: TextStyle(color: Colors.grey[500]),
-            ),
-          ],
-        ),
-      ),
-      Expanded(
-          child: Column(
-        children: [Icon(Icons.star, color: Colors.red)],
-      ))
-    ],
-  ),
-);
-
-class buildButtonColumn extends StatelessWidget {
-  final Color color;
-  final IconData icon;
-  final String label;
-
-  const buildButtonColumn(this.color, this.icon, this.label);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, color: color),
-        Container(
-          margin: const EdgeInsets.only(top: 8),
-          child: Text(
-            label,
-            style: TextStyle(
-                fontSize: 12, fontWeight: FontWeight.w400, color: color),
-          ),
-        )
-      ],
-    );
+  if (response.statusCode == 200) {
+    //Convert response into JSON
+    return Album.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('faild');
   }
 }
 
-Color color = Colors.blue;
-//Button Section
-Widget buttonSection = Row(
-  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  children: [
-    buildButtonColumn(color, Icons.call, 'CALL'),
-    buildButtonColumn(color, Icons.near_me, 'ROUTE'),
-    buildButtonColumn(color, Icons.share, 'SHARE'),
-    buildButtonColumn(color, Icons.access_alarm, 'ALARM')
+class Album {
+  final int userId;
+  final int id;
+  final String title;
 
-  ],
-);
+  const Album({required this.userId, required this.id, required this.title});
 
-class MyApp extends StatelessWidget {
+  factory Album.fromJson(Map<String, dynamic> json) {
+    return Album(userId: json['userId'], id: json['id'], title: json['title']);
+  }
+}
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late Future<Album> futureAlbum;
+
+  @override
+  void initState() {
+    super.initState();
+    futureAlbum = fetchAlbum();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: "Fluter App",
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-            appBar: AppBar(
-              title: const Text("Tourist Places"),
-            ),
-            backgroundColor: Colors.white,
-            body: Column(children: [titleSectionWidget, buttonSection])));
+      title: 'API Call',
+      home: Scaffold(
+        appBar: AppBar(title: const Text('API call')),
+        body: Center(
+          child: FutureBuilder<Album>(
+              future: futureAlbum,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(snapshot.data!.title);
+                } else {
+                  return Text('Something went wrong');
+                }
+                //show progressbar
+                return const CircularProgressIndicator();
+              }),
+        ),
+      ),
+    );
   }
 }

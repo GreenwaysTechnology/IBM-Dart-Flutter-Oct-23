@@ -1059,35 +1059,940 @@ class MyApp extends StatelessWidget {
             body: Column(children: [titleSectionWidget, buttonSection])));
   }
 }
+..
+
+Final Code:
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+// import 'package:flutterapps/App.dart';
+
+void main() => runApp(MyApp());
+
+//Title Widget
+Widget titleSectionWidget = Container(
+  padding: const EdgeInsets.all(32),
+  child: Row(
+    children: [
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /*2*/
+            Container(
+              padding: EdgeInsets.only(bottom: 8),
+              child: const Text(
+                "Taj Mahal",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            Text(
+              "Agra,India",
+              style: TextStyle(color: Colors.grey[500]),
+            ),
+          ],
+        ),
+      ),
+      Expanded(
+          child: Column(
+        children: [Icon(Icons.star, color: Colors.red)],
+      ))
+    ],
+  ),
+);
+
+class buildButtonColumn extends StatelessWidget {
+  final Color color;
+  final IconData icon;
+  final String label;
+
+  const buildButtonColumn(this.color, this.icon, this.label);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: color),
+        Container(
+          margin: const EdgeInsets.only(top: 8),
+          child: Text(
+            label,
+            style: TextStyle(
+                fontSize: 12, fontWeight: FontWeight.w400, color: color),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+Color color = Colors.blue;
+//Button Section
+Widget buttonSection = Row(
+  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  children: [
+    buildButtonColumn(color, Icons.call, 'CALL'),
+    buildButtonColumn(color, Icons.near_me, 'ROUTE'),
+    buildButtonColumn(color, Icons.share, 'SHARE'),
+    buildButtonColumn(color, Icons.access_alarm, 'ALARM')
+  ],
+);
+const String text =
+    " The Taj Mahal is an ivory-white marble mausoleum on the right bank of the river Yamuna in Agra,"
+    " Uttar Pradesh, India. It was commissioned in 1631 by the fifth Mughal emperor, "
+    "Shah Jahan to house the tomb of his beloved wife, Mumtaz Mahal;"
+    " it also houses the tomb of Shah Jahan himself";
+Widget textSection = Container(
+  padding: const EdgeInsets.all(32),
+  child: const Text(
+    text,
+    softWrap: true,
+  ),
+);
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        title: "Fluter App",
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+            appBar: AppBar(
+              title: const Text("Tourist Places"),
+            ),
+            backgroundColor: Colors.white,
+            body: ListView(children: [
+              Image.asset(
+                'images/1.jpg',
+                width: 600,
+                height: 240,
+                fit: BoxFit.cover,
+              ),
+              titleSectionWidget,
+              buttonSection,
+              textSection
+            ])));
+  }
+}
+.....................................................................................
+			 How to handle images in Flutter
+.....................................................................................
+Flutter app can include both code and assets which is other wise called "resources"
+
+What is asset?
+ An asset is a file that is bundled and deployed with your app and accessible at runtime. 
+
+Common types of assets:
+1.JSON File
+2.configuration files
+3.icons
+4.images(jpeg,webp,gif,png,bmt,wbmp)
+
+How to add or configures assets into application?
+
+Flutter uses the pubspec.yaml file, located at the root of your project, to identify assets required by an app.
+
+pubspec.yaml
+
+Syntax:
+flutter:
+  assets:
+    -assets/logo.png
+    -assets/images/logo.png
+
+eg:
+flutter:
+  assets:
+    [images/1.jpg]
+
+
+Loding images into app:
+
+1. Image(image:AssetImage('assets/images/logo.png'))
+2. Image.asset('images/logo.png')
+
+We can load images from network
+
+Image.network('http:www.example.com/logo.png')
+
+
+eg:
+ 	    Image.asset(
+                'images/1.jpg',
+                width: 600,
+                height: 240,
+                fit: BoxFit.cover,
+              )
+
+...................................................................................
+
+Full Layout :
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+// import 'package:flutterapps/App.dart';
+
+void main() => runApp(MyApp());
+
+//Title Widget
+Widget titleSectionWidget = Container(
+  padding: const EdgeInsets.all(32),
+  child: Row(
+    children: [
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /*2*/
+            Container(
+              padding: EdgeInsets.only(bottom: 8),
+              child: const Text(
+                "Taj Mahal",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            Text(
+              "Agra,India",
+              style: TextStyle(color: Colors.grey[500]),
+            ),
+          ],
+        ),
+      ),
+      Expanded(
+          child: Column(
+            children: [Icon(Icons.star, color: Colors.red)],
+          ))
+    ],
+  ),
+);
+
+class buildButtonColumn extends StatelessWidget {
+  final Color color;
+  final IconData icon;
+  final String label;
+
+  const buildButtonColumn(this.color, this.icon, this.label);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: color),
+        Container(
+          margin: const EdgeInsets.only(top: 8),
+          child: Text(
+            label,
+            style: TextStyle(
+                fontSize: 12, fontWeight: FontWeight.w400, color: color),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+Color color = Colors.blue;
+//Button Section
+Widget buttonSection = Row(
+  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  children: [
+    buildButtonColumn(color, Icons.call, 'CALL'),
+    buildButtonColumn(color, Icons.near_me, 'ROUTE'),
+    buildButtonColumn(color, Icons.share, 'SHARE'),
+    buildButtonColumn(color, Icons.access_alarm, 'ALARM')
+  ],
+);
+const String text =
+    " The Taj Mahal is an ivory-white marble mausoleum on the right bank of the river Yamuna in Agra,"
+    " Uttar Pradesh, India. It was commissioned in 1631 by the fifth Mughal emperor, "
+    "Shah Jahan to house the tomb of his beloved wife, Mumtaz Mahal;"
+    " it also houses the tomb of Shah Jahan himself";
+Widget textSection = Container(
+  padding: const EdgeInsets.all(32),
+  child: const Text(
+    text,
+    softWrap: true,
+  ),
+);
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        title: "Fluter App",
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+            appBar: AppBar(
+              title: const Text("Tourist Places"),
+            ),
+            backgroundColor: Colors.white,
+            body: ListView(children: [
+              Image.asset(
+                'images/1.jpg',
+                width: 600,
+                height: 240,
+                fit: BoxFit.cover,
+              ),
+              titleSectionWidget,
+              buttonSection,
+              textSection
+            ])));
+  }
+}
+.....................................................................................
+			     	Lists
+....................................................................................
+
+Displaying list of data is fundamental widget in mobile apps
+
+Flutter includes "ListView" widget to with list items.
+
+
+How to create ListView:
+.......................
+
+ListView(
+ children: const <Widget>[
+   ListTitle(
+     leading:Icon(Icons.contact)
+     title:Text('A')
+  ),
+   ListTitle(
+  leading:Icon(Icons.contact)
+     title:Text('A')
+  ),
+   ListTitle(
+  leading:Icon(Icons.contact)
+     title:Text('A')
+   )
+ ]
+)
+
+eg:
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Basic List Demo',
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Basic List Demo'),
+        ),
+        body: ListView(
+          children: const <Widget>[
+            ListTile(
+              leading: Icon(Icons.map),
+              title: Text("Map"),
+            ),
+            ListTile(
+              leading: Icon(Icons.photo_album),
+              title: Text('Albums'),
+            ),
+            ListTile(
+              leading: Icon(Icons.phone),
+              title: Text('Phone'),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+....................................................................................
+			     Grid List - GridView
+..................................................................................
+
+What if i want to display your items as a grid rater than a normal list of items that comes one after another - GridView Widget.
+
+How to begin GridView?
+
+ GridView.count() constructor, because you must know how many rows and columns you would like to add.
+
+Eg:
+Create Grid with 2 columns. if you change scrollDirection to horizontal, this produces 2 rows
+GridView.count(
+   crossAxisCount:2
+   children: [] //List of items
+)
+
+eg:
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "Grid",
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Grid')),
+        body: GridView.count(
+          crossAxisCount: 2,
+          children: List.generate(100, (index) {
+            return Center(
+              child: Text('Item $index'),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+}
+.....................................................................................
+			 List with Sections,Headings
+.....................................................................................
+
+1.Create a datasource with different types of items
+2.Convert the data source into a list of widgets.
 
 
 
+How to break list Widget into composable pattern:
 
+1.List items:
 
+abstract class ListItem{
 
+}
+class HeadingItem implements ListItem{
 
+}
+class MessageItem implements Listem{
 
+}
 
+create List of Items:
 
+const items = List<Listem>.generate(100,i =>{})
 
+Convert the datasource into list of widgets.
 
+ListView.builder(
+ itemCount:items.length
+ itemBuilder:(context,index){
+    final item = items[index]
+    return ListTitle(title:item.buildItem(context),subtitle:item.buildSubtitle    (context))
+ }
+)
 
+eg:
+//Section List
+import 'package:flutter/material.dart';
 
+void main() {
+  runApp(MyApp(
+    items: List<ListItem>.generate(1000, (index) {
+      return (index % 6 == 0)
+          ? HeadingItem("Heading $index")
+          : MessageItem("Sender $index", "Message body $index");
+    }),
+  ));
+}
 
+class MyApp extends StatelessWidget {
+  final List<ListItem> items;
 
+  const MyApp({super.key, required this.items});
 
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Section List',
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Section List'),
+        ),
+        body: ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              return ListTile(
+                title: item.buildTitle(context),
+                subtitle: item.buildSubTitle(context),
+              );
+            }),
+      ),
+    );
+  }
+}
 
+abstract class ListItem {
+  Widget buildTitle(BuildContext context);
 
+  Widget buildSubTitle(BuildContext context);
+}
 
+//A Listem that contains data to display a heading
+class HeadingItem implements ListItem {
+  final String heading;
 
+  HeadingItem(this.heading);
 
+  @override
+  Widget buildSubTitle(BuildContext context) => const SizedBox.shrink();
 
+  @override
+  Widget buildTitle(BuildContext context) {
+    return Text(
+      heading,
+      style: Theme.of(context).textTheme.headlineSmall,
+    );
+  }
+}
 
+//A ListItem that contains data to a display message
+class MessageItem implements ListItem {
+  final String sender;
+  final String body;
 
+  MessageItem(this.sender, this.body);
 
+  @override
+  Widget buildSubTitle(BuildContext context) => Text(sender);
 
+  @override
+  Widget buildTitle(BuildContext context) => Text(body);
+}
+.....................................................................................
+			 StateFull Widget
+....................................................................................
 
+What is StateFull widget?
 
+ A StateFull widget has its own mutable state that it needs to track.
+ It is modified according to user input.
+ Statfull widgets does some things
+ -The changed stated based on its previous state and updated view of the user    
+  interface
+ -When ever state is changed, the ui tree is rebuilt and re rendered
+ -A Statefull Widget triggers a build method for creating its childern widgets and  sub class of the state holds the related data.
+
+StateFull Widget Usecases:
+ 1.if there is any user input is needed
+ 2.There is dynamic changes like api calls and websockets.
+
+How to create StateFull widget?
+  
+class MyClass extends StateFullWidget {
+	
+  @override
+  State<MyClass> createState()=>_MyAppState()
+}
+class _MyAppState extends State<MyClass> {
+
+   Widget build(BuildContext context){
+	return Container()
+   }
+}
+
+Step 0: Creating statefull Widget:
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'StateFull Widget',
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('StateFull'),
+        ),
+      ),
+    );
+  }
+}
+...................................................................................
+			 Add a button and attach listener
+...................................................................................
+
+We have to add Listener inside State class.
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  //declare state variable which is going to change the update the ui
+  int _counter = 0;
+
+  //Listener
+  void _onPressed() {
+    print("Button is clicked");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'StateFull Widget',
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('StateFull'),
+        ),
+        body: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+                onPressed: _onPressed, child: const Text("increment"))
+          ],
+        ),
+      ),
+    );
+  }
+}
+...................................................................................
+			How to update state
+...................................................................................
+
+Methods from StateFull widget:
+
+1.SetState()
+  Which updates the state, whenever the state is updated ,Flutter rebuild the UI for updating lastest state.
+
+setState(callback fun)
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  //declare state variable which is going to change the update the ui
+  int _counter = 0;
+
+  //Listener
+  void _onPressed() {
+    print("Button is clicked");
+    setState(() {
+      //This call to setState tells the fluttr that has changed in this state, which causes it re run the build below
+      // so that the display can reflect the updated values. if change counter without setState, which will not
+      //trigger build method, if no build is triggered, then ui will not be updated
+      _counter++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print("build is called");
+    return MaterialApp(
+      title: 'StateFull Widget',
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('StateFull'),
+        ),
+        body: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+                onPressed: _onPressed, child: const Text("increment")),
+            const SizedBox(width: 16),
+            Text("Counter $_counter")
+          ],
+        ),
+      ),
+    );
+  }
+}
+.....................................................................................
+			 Adding Multiple Listener 
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  //declare state variable which is going to change the update the ui
+  int _counter = 0;
+
+  //Listener
+  void _onPressed() {
+    print("Button is clicked");
+    setState(() {
+      //This call to setState tells the fluttr that has changed in this state, which causes it re run the build below
+      // so that the display can reflect the updated values. if change counter without setState, which will not
+      //trigger build method, if no build is triggered, then ui will not be updated
+      _counter++;
+    });
+  }
+
+  void _onDecrement() {
+    setState(() {
+      _counter--;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print("build is called");
+    return MaterialApp(
+      title: 'StateFull Widget',
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('StateFull'),
+        ),
+        body: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+                onPressed: _onPressed, child: const Text("increment")),
+            const SizedBox(width: 16),
+            ElevatedButton(
+                onPressed: _onDecrement, child: const Text("decrement")),
+            const SizedBox(width: 16),
+            Text("Counter $_counter")
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Other Usefull methods from the StateFull Widgets:
+.................................................
+
+1.initState
+  This is entry point of a widget , used to initalize the state firstTime.
+
+2.didChangeDependencies:
+  It is used for loading the dependencies required for execution of a state.
+3.dispose 
+  For writing resource clean activities.
+...................................................................................
+			 API integration In flutter
+...................................................................................
+
+Any front end application need to talk to the api servers in order get data.
+
+All Flutter widgets mostly provided by flutter itself.
+if you want any extra features like http interaction, we need to install those packages.
+
+Third party packages:
+https://pub.dev/packages/http
+
+http:
+A composable, Future-based library for making HTTP requests.
+This package contains a set of high-level functions and classes that make it easy to consume HTTP resources. It's multi-platform, and supports mobile, desktop, and the browser.
+
+How to bring http package?
+
+ flutter pub add http
+
+Steps:
+
+1. flutter pub add http
+
+2. import http package
+  import 'package:http/http.dart'  as http;
+
+Add Permissions in respective platforms for production(AndroidManifest.xml)
+3. <user-permission android:name="android.permission.INTERNET">
+
+4.Make a http Request.
+ 
+ Future<http.Response> fetchAlbum() {
+      return http.get('url')  
+ } 
+ http.get method returns a Future that contains a Response.
+ http.Response class contains the data received from a successfull http call.
+ Response is raw data we need to map to dart specific.
+
+5.Convert the Response into a Custom Dart Object
+  "http.Response" ===> Dart Object
+
+  Entity class
+class Album {
+  final int userId;
+  final int id;
+  final String title;
+
+  const Album({required this.userId, required this.id, required this.title});
+
+  factory Album.fromJson(Map<String, dynamic> json) {
+    return Album(userId: json['userId'], id: json['id'], title: json['title']);
+  }
+}
+
+ 
+Future<Album> fetchAlbum() async {
+  final response = await http
+      .get(Uri.parse('https://jsonplaceholder.typicode.com/albums/1'));
+
+  if (response.statusCode == 200) {
+    //Convert response into JSON
+    return Album.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('faild');
+  }
+}
+ 
+6.FetchData : inside statefull Widget
+
+ call fetchAlbum function within initState metod or didChangeDependencies().
+
+class _MyAppState extends State<MyApp> {
+  late Future<Album> futureAlbum;
+
+  @override
+  void initState(){
+      super.initState();
+      future = fetchAlbum();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'StateFull Widget',
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('StateFull'),
+        ),
+      ),
+    );
+  }
+}
+
+7.Display the data on the screen. we need to use Sepcial widget.
+  "FutureBuilder" Widget.
+
+ FutureBuilder is part of Flutter framework and makes it easy to work with asyn operations.
+
+ FutureBuilder<Album>(future:futureAlbum,
+  
+   builder:(contex,snapshot){
+      if(snapshot.hasData){
+	   return Text(snapshot.data!.title)
+       }else{
+ 	 return Text('error')
+       }
+      //display spinner
+      return const CircularProgressIndicator();
+   }
+
+ )
+
+.
+Full Code:
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+Future<Album> fetchAlbum() async {
+  final response = await http
+      .get(Uri.parse('https://jsonplaceholder.typicode.com/albums/2'));
+
+  if (response.statusCode == 200) {
+    //Convert response into JSON
+    return Album.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('faild');
+  }
+}
+
+class Album {
+  final int userId;
+  final int id;
+  final String title;
+
+  const Album({required this.userId, required this.id, required this.title});
+
+  factory Album.fromJson(Map<String, dynamic> json) {
+    return Album(userId: json['userId'], id: json['id'], title: json['title']);
+  }
+}
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late Future<Album> futureAlbum;
+
+  @override
+  void initState() {
+    super.initState();
+    futureAlbum = fetchAlbum();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'API Call',
+      home: Scaffold(
+        appBar: AppBar(title: const Text('API call')),
+        body: Center(
+          child: FutureBuilder<Album>(
+              future: futureAlbum,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(snapshot.data!.title);
+                } else {
+                  return Text('Something went wrong');
+                }
+                //show progressbar
+                return const CircularProgressIndicator();
+              }),
+        ),
+      ),
+    );
+  }
+}
 
 
 
