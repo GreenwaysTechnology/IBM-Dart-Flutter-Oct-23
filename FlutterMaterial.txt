@@ -1993,6 +1993,842 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+.......
+
+List of items from internet:
+
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+Future<List<Album>> fetchAlbums() async {
+  final response =
+      await http.get(Uri.parse('https://jsonplaceholder.typicode.com/albums'));
+
+  List responseJson = json.decode(response.body);
+  if (response.statusCode == 200) {
+    return responseJson.map((m) => Album.fromJson(m)).toList();
+  } else {
+    throw Exception('faild');
+  }
+}
+
+class Album {
+  final int userId;
+  final int id;
+  final String title;
+
+  const Album({required this.userId, required this.id, required this.title});
+
+  factory Album.fromJson(Map<String, dynamic> json) {
+    return Album(userId: json['userId'], id: json['id'], title: json['title']);
+  }
+}
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late Future<List<Album>> futureAlbum;
+
+  @override
+  void initState() {
+    super.initState();
+    futureAlbum = fetchAlbums();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'API Call',
+      home: Scaffold(
+        appBar: AppBar(title: const Text('API call')),
+        body: Center(
+          child: FutureBuilder<List<Album>>(
+              future: futureAlbum,
+              builder: (context, snapshot) {
+                List<Album>? albums = snapshot.data;
+                return new ListView(
+                    children: albums!
+                        .map((album) => new Column(
+                              children: <Widget>[
+                                new Text(
+                                  album.title,
+                                  softWrap: true,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red),
+                                ),
+                              ],
+                            ))
+                        .toList());
+                //show progressbar
+                return const CircularProgressIndicator();
+              }),
+        ),
+      ),
+    );
+  }
+}
+.....................................................................................					Navigation and Routing
+.....................................................................................
+Flutter provides  complete end to end for navigating between screens and handling routing.
+
+There are two objects to handling routing in flutter
+
+1.Navigator
+   The Navigator is widget displays screens as a "stack" using the correct transition animation for the target platform.
+  In order to navigate from screen to screen, we can access the Navigator object through the routes buildContext and call imperative methods such as push or pop.
+
+Button or image or any element 
+
+onPressed:() {
+  Navigator.of(context).push(MaterialPageRoute(builder:(context)=>const WelcomeScreen())
+}
+Navigator keeps a stack of Route Object(representing the history stack),The push method also takes a Route object.
+
+The MaterialPageRoute object is subclass of Route that specifies the transition animation for material design.
+
+
+Named Routes:
+ There is one more way to create routes called "named routes".
+
+return MaterialApp(
+ routes: {
+    "/":(context)=>HomeScreen(),
+   "/details":(context)=>DetailsScreen()
+
+Using Router package:
+  There is thrid party router package "go_router".
+
+MaterialApp.router(
+ routerConfig: GoRouter(){
+   //configuratio
+ }
+)
+
+You can use both Navigator and Router togther in the same screen.
+....................................................................................
+ 			Navigate to a new screen and back to first screen
+...................................................................................
+
+Steps:
+
+1.create two routes
+2.Navigate to the second route using Navigator.push method
+3.Return to the first screen using Navigator.pop method.
+
+
+1.create two routes
+
+//screen 1
+class ScreenOne extends StatelessWidget {
+  const ScreenOne({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('First Screen')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            //Navigate to second Route
+          },
+          child: const Text('Go'),
+        ),
+      ),
+    );
+  }
+}
+
+//screen 2
+class ScreenTwo extends StatelessWidget {
+  const ScreenTwo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Second Screen')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            //Navigate to first Route
+          },
+          child: const Text('Go Back'),
+        ),
+      ),
+    );
+  }
+}
+
+2.Navigate to the second screen using Navigator.push
+import 'package:flutter/material.dart';
+
+//screen 1
+class ScreenOne extends StatelessWidget {
+  const ScreenOne({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('First Screen')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            //Navigate to second Route
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const ScreenTwo()));
+          },
+          child: const Text('Go'),
+        ),
+      ),
+    );
+  }
+}
+
+//screen 2
+class ScreenTwo extends StatelessWidget {
+  const ScreenTwo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Second Screen')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            //Navigate to first Route
+            Navigator.pop(context);
+          },
+          child: const Text('Go Back'),
+        ),
+      ),
+    );
+  }
+}
+
+void main() {
+  runApp(const MaterialApp(title: 'Navigation demo', home: ScreenOne()));
+}
+.....................................................................................
+				Named Routes
+.....................................................................................
+
+1.create two screens
+2.define routes
+3.Navigate to the second screen using Navigator.pushNamed()
+4.Return first screen using Navigator.pop.
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(
+    MaterialApp(
+      title: 'Named Routes Demo',
+      // Start the app with the "/" named route. In this case, the app starts
+      // on the FirstScreen widget.
+      initialRoute: '/',
+      routes: {
+        // When navigating to the "/" route, build the FirstScreen widget.
+        '/': (context) => const FirstScreen(),
+        // When navigating to the "/second" route, build the SecondScreen widget.
+        '/second': (context) => const SecondScreen(),
+      },
+    ),
+  );
+}
+
+class FirstScreen extends StatelessWidget {
+  const FirstScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('First Screen'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          // Within the `FirstScreen` widget
+          onPressed: () {
+            // Navigate to the second screen using a named route.
+            Navigator.pushNamed(context, '/second');
+          },
+          child: const Text('Launch screen'),
+        ),
+      ),
+    );
+  }
+}
+
+class SecondScreen extends StatelessWidget {
+  const SecondScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Second Screen'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          // Within the SecondScreen widget
+          onPressed: () {
+            // Navigate back to the first screen by popping the current route
+            // off the stack.
+            Navigator.pop(context);
+          },
+          child: const Text('Go back!'),
+        ),
+      ),
+    );
+  }
+}
+.....................................................................................
+			 How to pass data to a Screen
+....................................................................................
+
+This is going to help to build screen master detail page.
+
+1.Define a todo class
+2.Display list of todos
+3.Create detail screen that can display information about a todo.
+4.Navigate and pass data to the details screen.
+
+
+
+1.Define a todo class
+
+//step 1 : model class to hold data
+class Todo {
+  final String title;
+  final String description;
+
+  const Todo(this.title, this.description);
+}
+
+2.create a list of todos.
+
+3.display list of todos using a ListView
+class TodosScreen extends StatelessWidget {
+  final List<Todo> todos;
+
+  const TodosScreen({super.key, required this.todos});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Todos"),
+      ),
+      body: ListView.builder(
+          itemCount: todos.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(todos[index].title),
+            );
+          }),
+    );
+  }
+}
+
+4.Details Screen
+//Details Screen
+class DetailsScreen extends StatelessWidget {
+  final Todo todo;
+
+  const DetailsScreen({super.key, required this.todo});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(todo.title)),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Text(todo.description),
+      ),
+    );
+  }
+}
+
+Navigate and pass data to the details screen.
+..............
+
+Full code:
+//step 1 : model class to hold data
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+class Todo {
+  final String title;
+  final String description;
+
+  const Todo(this.title, this.description);
+}
+
+//Step 2: Create Master Screen to display todos data.
+
+class TodosScreen extends StatelessWidget {
+  final List<Todo> todos;
+
+  const TodosScreen({super.key, required this.todos});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Todos"),
+      ),
+      body: ListView.builder(
+          itemCount: todos.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(todos[index].title),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            DetailsScreen(todo: todos[index])));
+              },
+            );
+          }),
+    );
+  }
+}
+  
+//Details Screen
+class DetailsScreen extends StatelessWidget {
+  final Todo todo;
+
+  const DetailsScreen({super.key, required this.todo});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(todo.title)),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Text(todo.description),
+      ),
+    );
+  }
+}
+
+void main() {
+  runApp(MaterialApp(
+    title: 'MyTodo app',
+    home: TodosScreen(
+        todos: List.generate(
+            20, (index) => Todo("Todo $index ", "Description of $index}"))),
+  ));
+}
+.....................................................................................
+			   Drawer
+.....................................................................................
+
+Steps:
+ 1.create a Material with Scaffold
+ 2.Add a Drawer
+ 3.Add items into drawer
+ 4.close the drawer programmetically.
+
+
+Scaffold(
+ drawer:...
+)
+ 
+Add drawer
+
+Scaffold(
+ drawer:Drawer(child:ListView())
+)
+
+How to add Drawer to a Screen:
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyHomePage extends StatefulWidget {
+  final String title;
+
+  const MyHomePage({super.key, required this.title});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Drawer")),
+      drawer: Drawer(),
+    );
+  }
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      title: 'Drawer',
+      home: MyHomePage(title: 'title'),
+    );
+  }
+}
+
+Items into Drawer:
+..................
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyHomePage extends StatefulWidget {
+  final String title;
+
+  const MyHomePage({super.key, required this.title});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Drawer")),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+                decoration: BoxDecoration(color: Colors.blue),
+                child: Text("Header")),
+            ListTile(
+              title: Text('Home'),
+            ),
+            ListTile(title: Text('Inbox')),
+            ListTile(
+              title: Text('Archive'),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      title: 'Drawer',
+      home: MyHomePage(title: 'title'),
+    );
+  }
+}
+
+Add Listener to List items:
+...........................
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyHomePage extends StatefulWidget {
+  final String title;
+
+  const MyHomePage({super.key, required this.title});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Drawer")),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+                decoration: BoxDecoration(color: Colors.blue),
+                child: Text("Header")),
+            ListTile(
+              title: Text('Home'),
+              onTap: () {
+                print("Home");
+              },
+            ),
+            ListTile(
+                title: Text('Inbox'),
+                onTap: () {
+                  print("Inbox");
+                }),
+            ListTile(
+                title: Text('Archive'),
+                onTap: () {
+                  print("Archive");
+                })
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      title: 'Drawer',
+      home: MyHomePage(title: 'title'),
+    );
+  }
+}
+.....................................................................................
+Drawer Navigation :
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyHomePage extends StatefulWidget {
+  final String title;
+
+  const MyHomePage({super.key, required this.title});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  //to track item:
+  int _selectedIndex = 0;
+
+  //Listener
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      print("Selected index $_selectedIndex");
+    });
+  }
+
+  //To display dynamic widget when i click drawer item
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
+  //
+  static const List<Widget> _widgetOptions = <Widget>[
+    Text('Index 0: Home', style: optionStyle),
+    Text('Index 1: InBox', style: optionStyle),
+    Text('Index 2: Archive', style: optionStyle)
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Drawer")),
+      body: Center(
+        child: _widgetOptions[_selectedIndex],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+                decoration: BoxDecoration(color: Colors.blue),
+                child: Text("Header")),
+            ListTile(
+              title: Text('Home'),
+              onTap: () {
+                print("Home");
+                _onItemTapped(0);
+                //close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+                title: Text('Inbox'),
+                onTap: () {
+                  print("Inbox");
+                  _onItemTapped(1);
+                  Navigator.pop(context);
+                }),
+            ListTile(
+                title: Text('Archive'),
+                onTap: () {
+                  print("Archive");
+                  _onItemTapped(2);
+                  Navigator.pop(context);
+                })
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      title: 'Drawer',
+      home: MyHomePage(title: 'title'),
+    );
+  }
+}
+.....................................................................................
+			How to access platform sepcific Services
+.....................................................................................
+
+Any Mobile app , we need to access platform services like camera,contacts,storage,file system,location,etc......
+
+Flutter does not provide any core apis to access platform services... rather flutter provides "plugins".
+
+What is Plugin?
+  Flutter plugin is the wrapper of the native code like android(kotlin or java) and ioS(switft or objective c)
+ Plugin contains dart code which access low level services of the platform...
+
+Plugin vs package:
+
+ A package contains only dart code for eg: http
+ Plugin contains both dart and navative code(kotlin,js,swift,c++)
+...................................................................................
+			   Persistence
+.....................................................................................
+How to store data into device file system/memory?
+
+there are three ways to store data in flutter?
+
+1.key-value on disk
+2.files - read and write data into disk file
+3.SQLite - In memory data base
+
+Key-value :
+ if you want to store small information of key-value, we can use thehre is plugin called "shared_preferences"
+
+shared_preferences:
+  Wraps platform-specific persistent storage for simple data (NSUserDefaults on iOS and macOS, SharedPreferences on Android, etc.). Data may be persisted to disk asynchronously, and there is no guarantee that writes will be persisted to disk after returning, so this plugin must not be used for storing critical data.
+
+flutter pub add shared_preferences
+
+apis: 
+write api - set
+read api  - get
+remove api -remove
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Shared Preferences',
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadCounter();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Storage'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('You have pushed the button many times'),
+            Text(
+              "$_counter",
+              style: Theme.of(context).textTheme.headlineMedium,
+            )
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  //load the counter on startup
+  void _loadCounter() async {
+    //Get Shared Prefence Instance
+    final preference = await SharedPreferences.getInstance();
+    setState(() {
+      _counter = (preference.getInt('counter') ?? 0);
+    });
+  }
+
+  //adding counter into shared preference
+  Future<void> _incrementCounter() async {
+    final preference = await SharedPreferences.getInstance();
+    setState(() {
+      _counter = (preference.getInt('counter') ?? 0) + 1;
+      preference.setInt("counter", _counter);
+    });
+  }
+}
+.....................................................................................
+  
+
+
+
 
 
 

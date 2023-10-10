@@ -1,71 +1,80 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
-Future<Album> fetchAlbum() async {
-  final response = await http
-      .get(Uri.parse('https://jsonplaceholder.typicode.com/albums/2'));
-
-  if (response.statusCode == 200) {
-    //Convert response into JSON
-    return Album.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception('faild');
-  }
-}
-
-class Album {
-  final int userId;
-  final int id;
-  final String title;
-
-  const Album({required this.userId, required this.id, required this.title});
-
-  factory Album.fromJson(Map<String, dynamic> json) {
-    return Album(userId: json['userId'], id: json['id'], title: json['title']);
-  }
-}
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  late Future<Album> futureAlbum;
-
-  @override
-  void initState() {
-    super.initState();
-    futureAlbum = fetchAlbum();
-  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'API Call',
-      home: Scaffold(
-        appBar: AppBar(title: const Text('API call')),
-        body: Center(
-          child: FutureBuilder<Album>(
-              future: futureAlbum,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Text(snapshot.data!.title);
-                } else {
-                  return Text('Something went wrong');
-                }
-                //show progressbar
-                return const CircularProgressIndicator();
-              }),
+      title: 'Shared Preferences',
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadCounter();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Storage'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('You have pushed the button many times'),
+            Text(
+              "$_counter",
+              style: Theme.of(context).textTheme.headlineMedium,
+            )
+          ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ),
     );
+  }
+
+  //load the counter on startup
+  void _loadCounter() async {
+    //Get Shared Prefence Instance
+    final preference = await SharedPreferences.getInstance();
+    setState(() {
+      _counter = (preference.getInt('counter') ?? 0);
+    });
+  }
+
+  //adding counter into shared preference
+  Future<void> _incrementCounter() async {
+    final preference = await SharedPreferences.getInstance();
+    setState(() {
+      _counter = (preference.getInt('counter') ?? 0) + 1;
+      preference.setInt("counter", _counter);
+    });
   }
 }
