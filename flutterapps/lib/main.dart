@@ -1,80 +1,95 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:redux/redux.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+
 
 void main() {
-  runApp(MyApp());
+  runApp(new FlutterReduxApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+// One simple action: Increment
+enum Actions { Increment, Decrement }
+
+// The reducer, which takes the previous count and increments it in response
+// to an Increment action.
+int counterReducer(int state, action) {
+  if (action == Actions.Increment) {
+    return state + 1;
+  }
+  //default state; which is called to bind default vali
+  return state;
+}
+
+class FlutterReduxApp extends StatelessWidget {
+  // Create your store as a final variable in a base Widget. This works better
+  // with Hot Reload than creating it directly in the `build` function.
+  final store = new Store(counterReducer, initialState: 0);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Shared Preferences',
-      home: MyHomePage(),
-    );
-  }
-}
+    final title = 'Flutter Redux Demo';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _loadCounter();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Storage'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('You have pushed the button many times'),
-            Text(
-              "$_counter",
-              style: Theme.of(context).textTheme.headlineMedium,
-            )
-          ],
+    return new MaterialApp(
+      theme: new ThemeData.dark(),
+      title: title,
+      home: new StoreProvider(
+        // Pass the store to the StoreProvider. Any ancestor `StoreConnector`
+        // Widgets will find and use this value as the `Store`.
+        store: store,
+        child: new Scaffold(
+          appBar: new AppBar(
+            title: new Text(title),
+          ),
+          body: new Center(
+            child: new Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                new Text(
+                  'You have pushed the button this many times:',
+                ),
+                // Connect the Store to a Text Widget that renders the current
+                // count.
+                //
+                // We'll wrap the Text Widget in a `StoreConnector` Widget. The
+                // `StoreConnector` will find the `Store` from the nearest
+                // `StoreProvider` ancestor, convert it into a String of the
+                // latest count, and pass that String  to the `builder` function
+                // as the `count`.
+                //
+                // Every time the button is tapped, an action is dispatched and
+                // run through the reducer. After the reducer updates the state,
+                // the Widget will be automatically rebuilt with the latest
+                // count. No need to manually manage subscriptions or Streams!
+                new StoreConnector<int, String>(
+                  converter: (store) => store.state.toString(),
+                  builder: (context, count) => new Text(
+                    count,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                )
+              ],
+            ),
+          ),
+          // Connect the Store to a FloatingActionButton. In this case, we'll
+          // use the Store to build a callback that with dispatch an Increment
+          // Action.
+          //
+          // Then, we'll pass this callback to the button's `onPressed` handler.
+          floatingActionButton: new StoreConnector<int, VoidCallback>(
+            converter: (store) {
+              // Return a `VoidCallback`, which is a fancy name for a function
+              // with no parameters. It only dispatches an Increment action.
+              return () => store.dispatch(Actions.Increment);
+            },
+            builder: (context, callback) => new FloatingActionButton(
+              // Attach the `callback` to the `onPressed` attribute
+              onPressed: callback,
+              tooltip: 'Increment',
+              child: new Icon(Icons.add),
+            ),
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
     );
-  }
-
-  //load the counter on startup
-  void _loadCounter() async {
-    //Get Shared Prefence Instance
-    final preference = await SharedPreferences.getInstance();
-    setState(() {
-      _counter = (preference.getInt('counter') ?? 0);
-    });
-  }
-
-  //adding counter into shared preference
-  Future<void> _incrementCounter() async {
-    final preference = await SharedPreferences.getInstance();
-    setState(() {
-      _counter = (preference.getInt('counter') ?? 0) + 1;
-      preference.setInt("counter", _counter);
-    });
   }
 }

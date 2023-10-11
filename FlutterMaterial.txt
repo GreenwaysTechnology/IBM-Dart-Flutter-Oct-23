@@ -2825,11 +2825,365 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 .....................................................................................
-  
+				Sqlite
+...................................................................................
+Sqlite is one the most popular database used inside mobile devices to store large amount instead of using key-value or local file system.
+
+Sqlite provides fast inert,updates and quires comparted to other local persistency soultions.
+
+There is plugin called "sqflite" plugin.
 
 
+Steps:
+1.how to add depedency
+2.Define model class
+3.open the database
+4.create table
+5.insert data into table
+6.Read data from the table
+7.update data in the table
+8.Delete data from the table.
 
 
+1.how to add depedency
+flutter pub add sqflite path
+
+packages:
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+import 'package:flutter/material.dart';
 
 
+2.Define model class
+//declare model class
+class User {
+  final int id;
+  final String name;
+  final int age;
+
+  const User(this.id, this.name, this.age);
+}
+
+3.Open database
+import 'package:flutter/widgets.dart';
+
+WidgetsFlutterBinding.ensureIntialized();
+
+//open the database and store reference
+
+final database = openDatabase(
+  join(await getDatabasesPath(), 'user_database.db')
+)
+
+4.Create user table.
+
+  final String createSql = 'CREATE TABL user(id INTEGER PRIMARY_KEY, name TEXT,age INTEGER)';
+
+
+  final database = openDatabase(
+      join(await getDatabasesPath(), 'user_database.db'),
+      onCreate: (db, version) {
+        return db.execute(createSql)
+      },
+      version: 1
+  );
+
+5.INSERT a User Model into the database.
+
+In order to insert user into database, we need to convert it into map.
+class User {
+  final int id;
+  final String name;
+  final int age;
+
+  const User({required this.id, required this.name, required this.age});
+
+
+  Map<String, dynamic> toMap() {
+    //keys must correspond to the names of the columns in the database
+    return {
+      'id': id,
+      'name': name,
+      'age': age
+    };
+  }
+
+  @override
+  String toString() {
+    return 'User{id:$id name $name age $age }';
+  }
+
+}
+
+//insert operation
+ 
+Future<void> insertUser(User user) async {
+   //get database refernce
+   final db = await database;   
+   await db.insert('user',user.toMap(),conflictAlgorthim:ConflictAlgorthim.replace)
+}
+
+await insertUser(user)
+
+6.Select all users
+
+Future<List<User>> findAll() async {
+   final db = await database;   
+   
+   //Query table 
+   final List<Map<String,dynamic>> maps = await db.query('user')
+ 
+   return List.generate(maps.length,(i){
+	return User(id:maps[i]['id'],name:maps[i]['name'],age:maps[i]['age'])
+   })  
+}
+
+7.update users
+
+Future<void> update() async {
+   final db = await database;   
+   
+   await db.update('user',user.toMap(),where:'id=?', whereArgs:[user.id])
+}
+
+update(User(1,'foo',34))
+ 
+
+8.Delete a user
+
+Future<void> deleteUser(int id) async {
+   final db = await database;   
+   
+   await db.delete('user',where:'id=?', whereArgs:[id])
+}
+....................................................................................
+			 State management in flutter
+.....................................................................................
+
+Where the data is kept?
+   
+Generally data is kept with in widget(Statefull widget)
+ 
+State is nothing but data which can be maintained and used by widget or widgets.
+
+There two types state
+
+1.ephemeral state
+   State is maintained by single widget called ephermeral called.
+  All StateFulWidgets hold ephermeral state.
+2.app state
+   State is maintained globally required by many or some widgets
+
+How to implement app state in Flutter?
+
+ Flutter offers various third party options to implement statement
+
+Possible solutions:
+
+1.Provider
+2.RiverPod
+3.Redux  - Flutter-Redux package
+4.Fish redux
+5.Bloc/Rx
+6.Getit
+7.Mobx
+8.GetX
+etc..
+
+Provider:
+
+Steps:
+1.install provider
+
+Provider steps:
+
+1.define model
+2.Inject provider in the root 
+3.Consume provider where ever you want 
+
+import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart';
+
+void main() {
+  //We need to inject Provider in the root
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => Counter(),
+      child: const MyApp(),
+    ),
+  );
+}
+
+//ChangeNotifier: with Model binding: Model
+
+class Counter with ChangeNotifier {
+  //state
+  int value = 0;
+
+  //logic; actions
+  void increment() {
+    value++;
+    notifyListeners();
+  }
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        title: 'Provider with Flutter', home: const MyHomePage());
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Provider with Flutter'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("You have pushed the button many times:"),
+            //Consumer(listener) looks for any parent Provider Widget and retrives its model(Counter)
+            //Then it uses that model to build widets, and will tigger rebuilds if the model is updated
+            Consumer<Counter>(
+                builder: (context, counter, child) => Text("${counter.value}"))
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          //You can access provider any where you have access to the context. Provider is bound with context object
+          //Provider.of<Counter>(context)
+          //Get Referenc of Counter Model instance
+          var counter = context.read<Counter>();
+          counter.increment();
+        },
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+.....................................................................................
+				 Redux
+....................................................................................
+
+Basic concepts:
+
+1.reducer 
+  Where biz logic of widgets are kept like model class in provider.
+
+2.Actions
+   It is request to send to redux engine, for performming biz logic
+
+3.Store
+   Centeralized place where the state is maintained.
+
+dart pub add redux  - core redux - store,reducer,actions,middlewares 
+flutter pub add flutter_redux - connector between flutter ui and redux
+
+import 'package:flutter/material.dart';
+import 'package:redux/redux.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+
+// One simple action: Increment
+enum Actions { Increment }
+
+// The reducer, which takes the previous count and increments it in response
+// to an Increment action.
+int counterReducer(int state, action) {
+  if (action == Actions.Increment) {
+    return state + 1;
+  }
+
+  return state;
+}
+
+void main() {
+  runApp(new FlutterReduxApp());
+}
+
+class FlutterReduxApp extends StatelessWidget {
+  // Create your store as a final variable in a base Widget. This works better
+  // with Hot Reload than creating it directly in the `build` function.
+  final store = new Store(counterReducer, initialState: 0);
+
+  @override
+  Widget build(BuildContext context) {
+    final title = 'Flutter Redux Demo';
+
+    return new MaterialApp(
+      theme: new ThemeData.dark(),
+      title: title,
+      home: new StoreProvider(
+        // Pass the store to the StoreProvider. Any ancestor `StoreConnector`
+        // Widgets will find and use this value as the `Store`.
+        store: store,
+        child: new Scaffold(
+          appBar: new AppBar(
+            title: new Text(title),
+          ),
+          body: new Center(
+            child: new Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                new Text(
+                  'You have pushed the button this many times:',
+                ),
+                // Connect the Store to a Text Widget that renders the current
+                // count.
+                //
+                // We'll wrap the Text Widget in a `StoreConnector` Widget. The
+                // `StoreConnector` will find the `Store` from the nearest
+                // `StoreProvider` ancestor, convert it into a String of the
+                // latest count, and pass that String  to the `builder` function
+                // as the `count`.
+                //
+                // Every time the button is tapped, an action is dispatched and
+                // run through the reducer. After the reducer updates the state,
+                // the Widget will be automatically rebuilt with the latest
+                // count. No need to manually manage subscriptions or Streams!
+                new StoreConnector<int, String>(
+                  converter: (store) => store.state.toString(),
+                  builder: (context, count) => new Text(
+                        count,
+                        style: Theme.of(context).textTheme.display1,
+                      ),
+                )
+              ],
+            ),
+          ),
+          // Connect the Store to a FloatingActionButton. In this case, we'll
+          // use the Store to build a callback that with dispatch an Increment
+          // Action.
+          //
+          // Then, we'll pass this callback to the button's `onPressed` handler.
+          floatingActionButton: new StoreConnector<int, VoidCallback>(
+            converter: (store) {
+              // Return a `VoidCallback`, which is a fancy name for a function
+              // with no parameters. It only dispatches an Increment action.
+              return () => store.dispatch(Actions.Increment);
+            },
+            builder: (context, callback) => new FloatingActionButton(
+                  // Attach the `callback` to the `onPressed` attribute
+                  onPressed: callback,
+                  tooltip: 'Increment',
+                  child: new Icon(Icons.add),
+                ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
